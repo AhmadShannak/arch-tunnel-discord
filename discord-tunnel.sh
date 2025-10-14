@@ -5,6 +5,12 @@
 
 set -euo pipefail
 
+# Ensure no global WireGuard routing from previous runs
+sudo wg-quick down wg-ws >/dev/null 2>&1 || true
+sudo systemctl stop wg-quick@wg-ws >/dev/null 2>&1 || true
+sudo ip rule del table 51820 >/dev/null 2>&1 || true
+sudo ip route flush table 51820 >/dev/null 2>&1 || true
+
 WG_IF="${1:-wg-ws}"
 NS="discordns"
 SUBNET="10.200.0.0/24"
